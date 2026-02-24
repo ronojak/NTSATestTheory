@@ -43,23 +43,18 @@ class ProfileActivity : AppCompatActivity() {
         findViewById<Button>(R.id.btn_save).setOnClickListener {
             vm.save(name.text.toString().trim(), phone.text.toString().trim())
         }
-        findViewById<Button>(R.id.btn_manage).setOnClickListener {
+        findViewById<Button>(R.id.btn_go_premium).setOnClickListener {
             startActivity(Intent(this, SubscriptionActivity::class.java))
         }
 
         lifecycleScope.launch {
             repeatOnLifecycle(androidx.lifecycle.Lifecycle.State.STARTED) {
                 vm.state.collect { st ->
-                    if (st.loading) return@collect
-                    if (st.error != null) Toast.makeText(this@ProfileActivity, st.error, Toast.LENGTH_SHORT).show()
-                    if (st.profile != null) {
-                        name.setText(st.profile.name ?: "")
-                        phone.setText(st.profile.phone ?: "")
-                        emailView.text = st.profile.email ?: ""
-                    }
-                    if (st.subscription != null) {
-                        sub.text = st.subscription.status + (st.subscription.planType?.let { " ($it)" } ?: "")
-                    }
+                    st.toast?.let { Toast.makeText(this@ProfileActivity, it, Toast.LENGTH_SHORT).show() }
+                    name.setText(st.name ?: "")
+                    phone.setText(st.phone ?: "")
+                    emailView.text = st.email ?: ""
+                    sub.text = st.subscriptionStatus?.let { "Subscription: $it" } ?: "Subscription: free"
                 }
             }
         }

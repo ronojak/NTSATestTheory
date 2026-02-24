@@ -14,19 +14,26 @@ class BillingRepositoryImpl @Inject constructor(
 
     private fun bearer(): String? = session.token()?.let { "Bearer $it" }
 
-    override suspend fun initializePayment(uid: String, plan: String): Result<BillingRepository.PaymentInit> = try {
-        val b = bearer() ?: return Result.Error("Not logged in")
-        val resp = api.initialize(b, InitRequest(plan))
-        if ((resp.checkoutUrl ?: resp.reference) != null) Result.Success(BillingRepository.PaymentInit(resp.checkoutUrl, resp.reference)) else Result.Error("Empty response")
-    } catch (e: Exception) {
-        Result.Error("Initialize failed", e)
+    override suspend fun initializePayment(uid: String, plan: String): Result<BillingRepository.PaymentInit> {
+        return try {
+            val b = bearer() ?: return Result.Error("Not logged in")
+            val resp = api.initialize(b, InitRequest(plan))
+            if ((resp.checkoutUrl ?: resp.reference) != null) {
+                Result.Success(BillingRepository.PaymentInit(resp.checkoutUrl, resp.reference))
+            } else {
+                Result.Error("Empty response")
+            }
+        } catch (e: Exception) {
+            Result.Error("Initialize failed", e)
+        }
     }
-
-    override suspend fun verifyPayment(reference: String): Result<Boolean> = try {
-        val b = bearer() ?: return Result.Error("Not logged in")
-        val resp = api.verify(b, reference)
-        Result.Success(resp.success)
-    } catch (e: Exception) {
-        Result.Error("Verify failed", e)
+    override suspend fun verifyPayment(reference: String): Result<Boolean> {
+        return try {
+            val b = bearer() ?: return Result.Error("Not logged in")
+            val resp = api.verify(b, reference)
+            Result.Success(resp.success)
+        } catch (e: Exception) {
+            Result.Error("Verify failed", e)
+        }
     }
 }

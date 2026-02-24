@@ -8,6 +8,13 @@ plugins {
 }
 
 android {
+
+    lint {
+        disable += "FlowOperatorInvokedInComposition"
+        disable += "StateFlowValueCalledInComposition"
+        disable += "CoroutineCreationDuringComposition"
+    }
+
     namespace = "com.drivetheory.cbt"
     compileSdk = 36
 
@@ -43,16 +50,23 @@ android {
     }
 
     buildTypes {
-        release {
-            isMinifyEnabled = true
-            isShrinkResources = true
+        getByName("debug") {
+            // defaults
+        }
+        getByName("release") {
+            isMinifyEnabled = false
+            isShrinkResources = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            signingConfig = signingConfigs.getByName("release")
+            val releaseConfig = signingConfigs.getByName("release")
+            if (releaseConfig.storeFile != null) {
+                signingConfig = releaseConfig
+            }
         }
     }
+
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17

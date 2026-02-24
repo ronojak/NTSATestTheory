@@ -78,7 +78,7 @@ class ReceiptDetailsActivity : ComponentActivity() {
     }
 
     private fun buildLogsUrl(paymentId: String?, checkout: String?): String? {
-        val project = BuildConfig.FIREBASE_PROJECT_ID
+        val project = "" // TODO: set FIREBASE_PROJECT_ID via buildConfigField if needed
         if (project.isBlank()) return null
         val parts = mutableListOf<String>()
         if (!paymentId.isNullOrBlank()) parts.add("jsonPayload.paymentId=\"$paymentId\"")

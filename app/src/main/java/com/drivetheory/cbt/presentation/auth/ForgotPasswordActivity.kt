@@ -29,6 +29,7 @@ class ForgotPasswordActivity : AppCompatActivity() {
                 when (r) {
                     is com.drivetheory.cbt.core.common.Result.Success -> Toast.makeText(this@ForgotPasswordActivity, "Reset request sent", Toast.LENGTH_SHORT).show()
                     is com.drivetheory.cbt.core.common.Result.Error -> Toast.makeText(this@ForgotPasswordActivity, r.message, Toast.LENGTH_SHORT).show()
+                    else -> Unit
                 }
             }
         }

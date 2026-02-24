@@ -19,8 +19,9 @@ class SubscriptionRepositoryImpl @Inject constructor(
 
     private fun bearer(): String? = session.token()?.let { "Bearer $it" }
 
-    override suspend fun refresh(uid: String): Result<Subscription> = try {
-        val b = bearer() ?: return Result.Error("Not logged in")
+    override suspend fun refresh(uid: String): Result<Subscription> {
+        return try {
+            val b = bearer() ?: return Result.Error("Not logged in")
         val dto = api.getEntitlements(b)
         val sub = Subscription(
             status = dto.status,
@@ -31,10 +32,10 @@ class SubscriptionRepositoryImpl @Inject constructor(
         )
         cache(sub)
         Result.Success(sub)
-    } catch (e: Exception) {
-        Result.Error("Refresh failed", e)
+        } catch (e: Exception) {
+            Result.Error("Refresh failed", e)
+        }
     }
-
     override suspend fun getCached(): Subscription? {
         val status = prefs.getString(KEY_STATUS, "free") ?: "free"
         val plan = prefs.getString(KEY_PLAN)
