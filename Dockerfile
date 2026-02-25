@@ -11,4 +11,4 @@ RUN npx prisma generate
 COPY backend/railway/src ./src
 
 EXPOSE 8080
-CMD ["node", "src/server.js"]
+CMD ["sh", "-c", "npx prisma db push && node src/server.js"]
