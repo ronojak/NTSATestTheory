@@ -17,7 +17,6 @@ const { paymentsRouter } = require('./routes/payments');
 const { adminRouter } = require('./routes/admin');
 
 const app = express();
-const prisma = new PrismaClient();
 
 app.set('trust proxy', true);
 app.use(helmet());
@@ -25,10 +24,18 @@ app.use(cors({ origin: '*'}));
 app.use(express.json({ limit: '1mb' }));
 app.use(morgan('combined'));
 
-// attach prisma
-app.use((req, _res, next) => { req.prisma = prisma; next(); });
-
+// Health check must be before Prisma middleware so it works even if DB is unavailable
 app.get('/health', (_req, res) => res.json({ ok: true }));
+
+// Lazy Prisma initialisation — crashes here instead of at startup if DATABASE_URL is missing
+let _prisma = null;
+function getPrisma() {
+  if (!_prisma) _prisma = new PrismaClient();
+  return _prisma;
+}
+
+// attach prisma
+app.use((req, _res, next) => { req.prisma = getPrisma(); next(); });
 
 app.use('/api/auth', authRouter);
 app.use('/api/me', meRouter);
