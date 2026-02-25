@@ -62,13 +62,23 @@ paymentsRouter.post('/payments/mpesa/stk-push', requireAuth, async (req, res) =>
     }
   });
 
-  const daraja = await stkPush({
-    phoneNumber: String(phoneNumber),
-    amount: finalAmount,
-    accountReference: `NTSA-${payment.id}`,
-    transactionDesc: `NTSA plan ${planId}`,
-    callbackUrl
-  });
+  // Daraja field limits: AccountReference ≤ 12 chars, TransactionDesc ≤ 13 chars
+  let daraja;
+  try {
+    daraja = await stkPush({
+      phoneNumber: String(phoneNumber),
+      amount: finalAmount,
+      accountReference: `NTSA${payment.id.slice(-8)}`,   // 4 + 8 = 12 chars
+      transactionDesc: `NTSA ${planId}`.slice(0, 13),    // max 13 chars
+      callbackUrl
+    });
+  } catch (e) {
+    await prisma.payment.update({
+      where: { id: payment.id },
+      data: { status: 'FAILED', resultDesc: e.message }
+    });
+    return res.status(502).json({ error: 'stk_push_failed', detail: e.message });
+  }
 
   const merchantRequestId = daraja.MerchantRequestID || null;
   const checkoutRequestId = daraja.CheckoutRequestID || null;
