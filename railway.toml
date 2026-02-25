@@ -1,0 +1,9 @@
+[build]
+buildCommand = "cd backend/railway && npm install && npx prisma generate"
+
+[deploy]
+startCommand = "cd backend/railway && node src/server.js"
+healthcheckPath = "/health"
+healthcheckTimeout = 30
+restartPolicyType = "on_failure"
+restartPolicyMaxRetries = 10
