@@ -34,8 +34,8 @@ class SubscriptionActivity : AppCompatActivity() {
             startPayment("monthly")
         }
         btnAnnual.setOnClickListener {
-            selectPlan("annual")
-            startPayment("annual")
+            selectPlan("yearly")
+            startPayment("yearly")
         }
         val mpesa = findViewById<Button>(R.id.btn_mpesa)
         if (BuildConfig.MPESA_ENABLED) {
@@ -74,7 +74,7 @@ class SubscriptionActivity : AppCompatActivity() {
         selectedPlan = plan
         val check = " ✓"
         btnMonthly.text = if (plan == "monthly") getString(R.string.choose_monthly_label, check) else getString(R.string.choose_monthly_label, "")
-        btnAnnual.text = if (plan == "annual") getString(R.string.choose_annual_label, check) else getString(R.string.choose_annual_label, "")
+        btnAnnual.text = if (plan == "yearly") getString(R.string.choose_annual_label, check) else getString(R.string.choose_annual_label, "")
 
         val selectedTint = ContextCompat.getColor(this, R.color.plan_selected)
         if (plan == "monthly") {

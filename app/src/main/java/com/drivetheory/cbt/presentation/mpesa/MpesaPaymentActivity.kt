@@ -53,11 +53,11 @@ fun MpesaPaymentScreen(onDone: () -> Unit, vm: MpesaPaymentViewModel = hiltViewM
         )
         Spacer(Modifier.height(12.dp))
         Row {
+            PlanChip("weekly", plan == "weekly") { plan = "weekly"; vm.setPlan("weekly") }
+            Spacer(Modifier.width(8.dp))
             PlanChip("monthly", plan == "monthly") { plan = "monthly"; vm.setPlan("monthly") }
             Spacer(Modifier.width(8.dp))
-            PlanChip("annual", plan == "annual") { plan = "annual"; vm.setPlan("annual") }
-            Spacer(Modifier.width(8.dp))
-            PlanChip("lifetime", plan == "lifetime") { plan = "lifetime"; vm.setPlan("lifetime") }
+            PlanChip("yearly", plan == "yearly") { plan = "yearly"; vm.setPlan("yearly") }
         }
         Spacer(Modifier.height(16.dp))
         Button(

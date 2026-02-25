@@ -29,7 +29,7 @@ android {
 
         val backendBaseUrl = (project.properties["BACKEND_BASE_URL"] as String?) ?: "https://REPLACE_ME/"
         buildConfigField("String", "BACKEND_BASE_URL", "\"${backendBaseUrl}\"")
-        val mpesaEnabled = (project.properties["ENABLE_MPESA"] as String?)?.toBoolean() ?: false
+        val mpesaEnabled = (project.properties["ENABLE_MPESA"] as String?)?.toBoolean() ?: true
         buildConfigField("boolean", "MPESA_ENABLED", mpesaEnabled.toString())
     }
 
