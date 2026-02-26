@@ -52,8 +52,19 @@ async function stkPush({ phoneNumber, amount, accountReference, transactionDesc,
     AccountReference: accountReference,
     TransactionDesc: transactionDesc
   };
+  try {
   const res = await axios.post(url, body, { headers: { Authorization: `Bearer ${token}` } });
   return res.data;
+} catch (err) {
+  console.error('DARAJA_STK_STATUS', err?.response?.status);
+  console.error('DARAJA_STK_DATA', JSON.stringify(err?.response?.data));
+  throw new Error(
+    err?.response?.data?.errorMessage ||
+    err?.response?.data?.ResponseDescription ||
+    err?.message ||
+    'Daraja STK push failed'
+    );
+  }
 }
 
 module.exports = { stkPush };
